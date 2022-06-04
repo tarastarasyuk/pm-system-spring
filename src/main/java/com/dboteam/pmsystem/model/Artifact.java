@@ -2,15 +2,17 @@ package com.dboteam.pmsystem.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
 @Data
+@ToString(of = {"name", "url", "attachment"})
+@NoArgsConstructor
 @Entity
 @Table(name = "artifact")
-@NoArgsConstructor
 public class Artifact {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +29,19 @@ public class Artifact {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "attachment_id")
+    @JoinColumn(name = "attachment_id", referencedColumnName = "id", nullable = false)
     private Attachment attachment;
 
+    public Artifact(String name, String url, Attachment attachment) {
+        this.name = name;
+        this.url = url;
+        this.attachment = attachment;
+
+        this.attachment.getArtifacts().add(this);
+    }
+
+    public Artifact(String name, String description, String url, Attachment attachment) {
+        this(name, url, attachment);
+        this.description = description;
+    }
 }
