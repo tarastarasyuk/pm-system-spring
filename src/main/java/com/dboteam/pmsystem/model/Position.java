@@ -15,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"collaborations"})
 @NoArgsConstructor
 @Entity
-@Table(name = "role")
+@Table(name = "position")
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -24,14 +24,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-//                .antMatchers("/")
-//                .antMatchers("/profile").hasRole("CLIENT")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .and()
-                .logout().logoutSuccessUrl("/");
+                .csrf().disable()
+                .authorizeRequests().anyRequest().authenticated()
+                .and().httpBasic()
+                .and().sessionManagement().disable();
     }
 
 

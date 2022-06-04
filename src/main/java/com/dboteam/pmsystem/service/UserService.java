@@ -1,7 +1,6 @@
 package com.dboteam.pmsystem.service;
 
-import com.dboteam.pmsystem.exception.NoSuchUserException;
-import com.dboteam.pmsystem.model.Position;
+import com.dboteam.pmsystem.exception.NoSuchEntityException;
 import com.dboteam.pmsystem.model.RoleName;
 import com.dboteam.pmsystem.model.User;
 import com.dboteam.pmsystem.repository.UserRepository;
@@ -36,10 +35,14 @@ public class UserService implements UserDetailsService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(NoSuchUserException::new);
+        return userRepository.findByUsername(username).orElseThrow(NoSuchEntityException::new);
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(RoleName roleName) {
         return Collections.singleton(new SimpleGrantedAuthority(roleName.name()));
+    }
+
+    public boolean userExists(String username) {
+        return userRepository.existsByUsername(username);
     }
 }
