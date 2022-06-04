@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 
 @Data
-@ToString(of = {"user", "role", "project"})
+@ToString(of = {"user", "position", "project"})
 @NoArgsConstructor
 @Entity
 @Table(name = "collaboration")
@@ -25,21 +25,21 @@ public class Collaboration {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
+    @JoinColumn(name = "position_id", referencedColumnName = "id", nullable = false)
+    private Position position;
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Project project;
 
-    public Collaboration(User user, Role role, Project project) {
+    public Collaboration(User user, Position position, Project project) {
         this.user = user;
-        this.role = role;
+        this.position = position;
         this.project = project;
 
         this.user.getCollaborations().add(this);
-        this.role.getCollaborations().add(this);
+        this.position.getCollaborations().add(this);
         this.project.getCollaborations().add(this);
     }
 }

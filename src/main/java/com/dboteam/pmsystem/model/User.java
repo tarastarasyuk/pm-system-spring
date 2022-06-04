@@ -26,6 +26,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "role_name", nullable = false)
+    private RoleName roleName;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     private Set<Collaboration> collaborations = new HashSet<>();
 
@@ -40,5 +43,10 @@ public class User {
     @PreRemove
     private void preRemove() {
         tasks.forEach(task -> task.setUser(null));
+    }
+
+    @PrePersist
+    private void prePersist() {
+        setRoleName(RoleName.WORKER);
     }
 }
