@@ -1,5 +1,6 @@
 package com.dboteam.pmsystem.controller;
 
+import com.dboteam.pmsystem.exception.ForbiddenException;
 import com.dboteam.pmsystem.model.*;
 import com.dboteam.pmsystem.service.CollaborationService;
 import com.dboteam.pmsystem.service.PositionService;
@@ -20,6 +21,7 @@ import java.util.Set;
 @RequestMapping("/projects")
 public class ProjectController {
 
+    private static final PositionName POSITION_NAME = PositionName.PROJECT_MANAGER;
     private final UserService userService;
     private final ProjectService projectService;
     private final CollaborationService collaborationService;
@@ -45,8 +47,16 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public Project updateProject(@RequestBody Project sourceProject, @PathVariable("id") Project targetProject) {
+    public Project updateProject(@RequestBody Project sourceProject, @PathVariable("id") Project targetProject, Principal principal) {
+        checkUserPosition(principal.getName(), targetProject);
         return projectService.updateProject(sourceProject, targetProject);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProject(@PathVariable("id") Project project, Principal principal) {
+        checkUserPosition(principal.getName(), project);
+        projectService.deleteProject(project);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
@@ -54,8 +64,7 @@ public class ProjectController {
     public ResponseEntity<Set<Collaboration>> setDevelopersForProject(@PathVariable("id") Project project,
                                                                       @RequestBody Map<String, String> usersBody,
                                                                       Principal principal) {
-        User currentUser = userService.findByUsername(principal.getName());
-        if (!collaborationService.userHasPositionInProject(currentUser, positionService.getPositionByPositionName(PositionName.PROJECT_MANAGER), project)) {
+        if (!userService.checkUserPosition(principal.getName(), PositionName.PROJECT_MANAGER, project)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         Set<Collaboration> savedCollaborators = new HashSet<>();
@@ -71,5 +80,9 @@ public class ProjectController {
         return new ResponseEntity<>(savedCollaborators, HttpStatus.OK);
     }
 
-
+    private void checkUserPosition(String username, Project project) {
+        if (!userService.checkUserPosition(username, POSITION_NAME, project)) {
+            throw new ForbiddenException();
+        }
+    }
 }

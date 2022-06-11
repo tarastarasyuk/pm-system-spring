@@ -25,7 +25,6 @@ public class User {
     private String username;
 
     @Column(name = "password", nullable = false)
-    @JsonIgnore
     private String password;
 
     @Enumerated(EnumType.STRING)

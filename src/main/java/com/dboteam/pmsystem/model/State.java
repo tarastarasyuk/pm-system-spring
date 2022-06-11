@@ -1,5 +1,6 @@
 package com.dboteam.pmsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class State {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)

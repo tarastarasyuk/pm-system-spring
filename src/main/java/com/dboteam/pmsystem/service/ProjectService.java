@@ -23,4 +23,8 @@ public class ProjectService {
         targetProject.setName(sourceProject.getName());
         return projectRepository.save(targetProject);
     }
+
+    public void deleteProject(Project project) {
+        projectRepository.delete(project);
+    }
 }
