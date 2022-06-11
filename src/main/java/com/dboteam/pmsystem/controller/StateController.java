@@ -31,7 +31,7 @@ public class StateController {
     @PutMapping("/{id}/states/{stateId}")
     public ResponseEntity<State> updateState(@PathVariable("id") Project project, @RequestBody State sourceState, @PathVariable("stateId") State targetState, Principal principal) {
         checkUserPosition(principal.getName(), project);
-        return new ResponseEntity<>(stateService.updateState(sourceState, targetState), HttpStatus.OK);
+        return new ResponseEntity<>(stateService.updateState(sourceState, targetState, project), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/states/{stateId}")

@@ -12,4 +12,5 @@ import java.util.List;
 @Repository
 public interface CollaborationRepository extends JpaRepository<Collaboration, Long> {
     boolean existsCollaborationByUserAndPositionAndProject(User user, Position position, Project project);
+    List<Collaboration> findCollaborationByProject(Project project);
 }

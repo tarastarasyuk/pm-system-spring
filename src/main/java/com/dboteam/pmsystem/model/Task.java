@@ -1,5 +1,6 @@
 package com.dboteam.pmsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class Task {
     )
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
@@ -47,7 +49,7 @@ public class Task {
     private LocalDateTime creationDate;
 
     @Column(name = "deadline")
-    private LocalDateTime deadline;
+    private Integer deadline;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "task")
     private Set<Attachment> attachments = new HashSet<>();
@@ -64,14 +66,19 @@ public class Task {
         this.description = description;
     }
 
-    public Task(String name, State state, LocalDateTime deadline) {
+    public Task(String name, State state, Integer deadline) {
         this(name, state);
         this.deadline = deadline;
     }
 
-    public Task(String name, String description, State state, LocalDateTime deadline) {
+    public Task(String name, String description, State state, Integer deadline) {
         this(name, state);
         this.description = description;
         this.deadline = deadline;
+    }
+
+    @PreRemove
+    public void remove() {
+        state.getTasks().remove(this);
     }
 }

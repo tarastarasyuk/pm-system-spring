@@ -41,4 +41,9 @@ public class State {
 
         this.project.getStates().add(this);
     }
+
+    @PreRemove
+    public void remove() {
+        project.getStates().remove(this);
+    }
 }

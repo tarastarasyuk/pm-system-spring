@@ -14,19 +14,27 @@ public class StateService {
     private final StateRepository stateRepository;
 
     public State createState(State state, Project project) {
-        if (stateRepository.existsByName(state.getName())) {
-            throw new SuchEntityAlreadyExistsException();
-        }
+        checkIfStateExistsInProject(state, project);
         state.setProject(project);
         return stateRepository.save(state);
     }
 
-    public State updateState(State sourceState, State targetState) {
+    public State updateState(State sourceState, State targetState, Project project) {
+        checkIfStateExistsInProject(sourceState, project);
         targetState.setName(sourceState.getName());
         return stateRepository.save(targetState);
     }
 
     public void deleteState(State state) {
         stateRepository.delete(state);
+    }
+
+    private void checkIfStateExistsInProject(State state, Project project) {
+        boolean existsByNameInProject = stateRepository.findAll().stream()
+                .filter(allState -> allState.getProject().getId().equals(project.getId()))
+                .anyMatch(projectState -> projectState.getName().equals(state.getName()));
+        if (existsByNameInProject) {
+            throw new SuchEntityAlreadyExistsException();
+        }
     }
 }

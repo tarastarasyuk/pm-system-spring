@@ -8,6 +8,8 @@ import com.dboteam.pmsystem.repository.CollaborationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CollaborationService {
@@ -19,5 +21,9 @@ public class CollaborationService {
 
     public boolean userHasPositionInProject(User user, Position position, Project project) {
         return collaborationRepository.existsCollaborationByUserAndPositionAndProject(user, position, project);
+    }
+
+    public List<Collaboration> getCollaborationsByProject(Project project) {
+        return collaborationRepository.findCollaborationByProject(project);
     }
 }
