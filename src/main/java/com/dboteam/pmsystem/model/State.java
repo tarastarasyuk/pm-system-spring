@@ -1,17 +1,23 @@
 package com.dboteam.pmsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
+@ToString(of = {"name", "project"})
+@EqualsAndHashCode(exclude = {"tasks"})
+@NoArgsConstructor
 @Entity
 @Table(name = "state")
-@NoArgsConstructor
 public class State {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +26,24 @@ public class State {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id", referencedColumnName = "id", nullable = false)
     private Project project;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "state")
+    private Set<Task> tasks = new HashSet<>();
+
+    public State(String name, Project project) {
+        this.name = name;
+        this.project = project;
+
+        this.project.getStates().add(this);
+    }
+
+    @PreRemove
+    public void remove() {
+        project.getStates().remove(this);
+    }
 }
