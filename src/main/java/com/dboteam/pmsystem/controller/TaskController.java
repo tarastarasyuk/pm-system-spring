@@ -24,7 +24,7 @@ public class TaskController {
     @PostMapping("/{id}/states/{stateId}")
     public ResponseEntity<Task> createTask(@PathVariable("id") Project project, @PathVariable("stateId") State state, @RequestBody Task task, Principal principal) {
         checkUserPosition(principal.getName(), project);
-        return new ResponseEntity<>(taskService.createTask(task, state), HttpStatus.OK);
+        return new ResponseEntity<>(taskService.createTask(task, state), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}/states/{stateId}/tasks/{taskId}")

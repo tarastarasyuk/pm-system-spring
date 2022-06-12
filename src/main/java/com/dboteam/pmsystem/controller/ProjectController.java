@@ -36,9 +36,9 @@ public class ProjectController {
     }
 
     @PostMapping
-    public Project createProject(@RequestBody Project project, Principal principal) {
+    public ResponseEntity<Project> createProject(@RequestBody Project project, Principal principal) {
         User user = userService.findByUsername(principal.getName());
-        return projectService.createProject(project, user);
+        return new ResponseEntity<>(projectService.createProject(project, user), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")

@@ -1,5 +1,6 @@
 package com.dboteam.pmsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Attachment {
     @Column(name = "comment")
     private String comment;
 
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "task_id", referencedColumnName = "id", nullable = false)
@@ -41,5 +43,10 @@ public class Attachment {
     public Attachment(String comment, Task task) {
         this(task);
         this.comment = comment;
+    }
+
+    @PreRemove
+    public void remove() {
+        task.getAttachments().remove(this);
     }
 }

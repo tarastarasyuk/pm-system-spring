@@ -1,5 +1,6 @@
 package com.dboteam.pmsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -27,6 +28,7 @@ public class Artifact {
     @Column(name = "url", nullable = false)
     private String url;
 
+    @JsonIgnore
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "attachment_id", referencedColumnName = "id", nullable = false)
@@ -43,5 +45,10 @@ public class Artifact {
     public Artifact(String name, String description, String url, Attachment attachment) {
         this(name, url, attachment);
         this.description = description;
+    }
+
+    @PreRemove
+    public void remove() {
+        attachment.getArtifacts().remove(this);
     }
 }

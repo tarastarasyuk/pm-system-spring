@@ -25,7 +25,7 @@ public class StateController {
     @PostMapping("/{id}/states")
     public ResponseEntity<State> createState(@PathVariable("id") Project project, @RequestBody State state, Principal principal) {
         checkUserPosition(principal.getName(), project);
-        return new ResponseEntity<>(stateService.createState(state, project), HttpStatus.OK);
+        return new ResponseEntity<>(stateService.createState(state, project), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}/states/{stateId}")
